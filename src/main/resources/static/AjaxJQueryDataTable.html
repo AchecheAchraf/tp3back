@@ -25,7 +25,7 @@
 			// On reformate le résultat comme un tableau
 			var chartData = [];
 			// Pour chaque catégorie dans le tableau result.content
-			result.content.forEach(
+			result._embedded.categories.forEach(
 				categorie =>
 				// On ajoute les attributs de la catégorie dans le tableau
 				chartData.push([parseInt(categorie.code), categorie.libelle, categorie.description])

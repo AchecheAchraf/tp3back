@@ -97,16 +97,16 @@
 
     <!-- Le template Mustache qui sert à formatter la liste des catégories -->
     <script id="categoriesTemplate" type="text/template">
-            <h2>Liste des catégories ({{content.length}} / {{page.totalElements}})</h2>
-            <TABLE>
-            {{! Un commentaire Mustache }}
-            <TR><TH>Code</TH><TH>Libelle</TH><TH>Description</TH></TR>
-            {{! Pour chaque categorie dans le tableau 'content' }}
-            {{#content}}
-            {{! Une ligne dans la table }}
-            <TR><TD>{{code}}</TD><TD>{{libelle}}</TD><TD>{{description}}</TD></TR>
-            {{/content}}
-            </TABLE>
+        <h2>Liste des catégories ({{_embedded.categories.length}} / {{page.totalElements}})</h2>
+        <TABLE>
+        {{! Un commentaire Mustache }}
+        <TR><TH>Code</TH><TH>Libelle</TH><TH>Description</TH></TR>
+        {{! Pour chaque categorie dans le tableau 'content' }}
+        {{#_embedded.categories}}
+        {{! Une ligne dans la table }}
+        <TR><TD>{{code}}</TD><TD>{{libelle}}</TD><TD>{{description}}</TD></TR>
+        {{/_embedded.categories}}
+        </TABLE>
         </script>
 </body>
 

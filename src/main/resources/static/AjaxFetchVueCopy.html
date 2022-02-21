@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Ajax avec l'API fetch et Vue.js</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+  <!-- On charge la bibliothèque Vue.js -->
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+  <div id="app">
+    <select @change="categorieChanged($event)">
+      <option value="" v-model="selectedHref">Choisissez une catégorie</option>
+      <option v-for="categorie in categories" :value="categorie._links.produits.href">
+        {{ categorie.libelle }}
+      </option>
+    </select>
+    <table>
+      <tr>
+        <th>Nom</th><th>Prix unitaire</th><th>Unités en stock</th>
+      </tr>
+      <tr v-for="produit in produits">
+        <td>{{produit.nom}}</td><td>{{produit.prixUnitaire}}</td><td>{{produit.unitesEnStock}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <hr />
+  <a href="api/categories" target="_blank">Voir les données brutes (JSON)</a>
+  <hr />
+
+  <a href="/">Retour au menu</a>
+
+  <script>
+    const HelloVueApp = {
+      data() {
+        return {
+          categories: [],
+          produits: [],
+          selectedHref: ""
+        };
+      },
+      mounted() {
+        this.chargeCategories();
+      },
+      methods: {
+        categorieChanged(event) {
+          console.log("categorieChanged");
+          this.chargeProduits(event.target.value);
+        },
+        chargeCategories() {
+          console.log("chargeCategories");
+          fetch("api/categories")
+            .then((response) => response.json())
+            .then((resultat) => {
+              console.log(resultat);
+              this.categories = resultat._embedded.categories;
+            })
+            .catch((error) => alert(error));
+        },
+        chargeProduits(hrefProduits) {
+          console.log("chargeProduits");
+          if (hrefProduits) {
+            fetch(hrefProduits)
+              .then((response) => response.json())
+              .then((resultat) => {
+                console.log(resultat);
+                this.produits = resultat._embedded.produits;
+              })
+              .catch((error) => alert(error));
+          } else {
+            this.produits = [];
+          }
+        },
+      },
+    };
+    Vue.createApp(HelloVueApp).mount("#app");
+  </script>
+</body>
+
+</html>

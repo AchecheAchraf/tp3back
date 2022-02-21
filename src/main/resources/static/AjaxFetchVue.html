@@ -1,43 +1,68 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <title>Ajax avec l'API fetch et Vue.js</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
 
     <!-- On charge la bibliothèque Vue.js -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-</head>
+    <script src="https://unpkg.com/vue@next"></script>
+  </head>
 
-<body>
+  <body>
     <div id="app">
-        <button v-on:click="doAjax">Exécuter la requête AJAX</button><br>
-        <div v-if="! json">...Le résultat va apparaître ici...</div>
-        <div v-if="json">
-            <h2>Liste des catégories ({{json.content.length}} / {{json.page.totalElements}})</h2>
-            <table>
-                <tr>
-                    <th>Code</th>
-                    <th>Libelle</th>
-                    <th>Description</th>
-                </tr>
-                <tr v-for="categorie in json.content">
-                    <td>{{categorie.code}}</td>
-                    <td>{{categorie.libelle}}</td>
-                    <td>{{categorie.description}}</td>
-                </tr>
-            </table>
-        </div>
+      <button v-on:click="doAjax">Exécuter la requête AJAX</button><br />
+      <div v-if="! categories">...Le résultat va apparaître ici...</div>
+      <div v-if="categories">
+        <h2>
+          Liste des catégories ({{categories.length}} / {{page.totalElements}})
+        </h2>
+        <table>
+          <tr>
+            <th>Code</th>
+            <th>Libelle</th>
+            <th>Description</th>
+          </tr>
+          <tr v-for="categorie in categories">
+            <td>{{categorie.code}}</td>
+            <td>{{categorie.libelle}}</td>
+            <td>{{categorie.description}}</td>
+          </tr>
+        </table>
+      </div>
     </div>
 
-    <hr>
-    <a href='api/categories' target="_blank">Voir les données brutes (JSON)</a>
-    <hr>
+    <hr />
+    <a href="api/categories" target="_blank">Voir les données brutes (JSON)</a>
+    <hr />
 
     <a href="/">Retour au menu</a>
 
-    <script src="AjaxFetchVue.js"></script>    
-</body>
-
+    <script>
+      const HelloVueApp = {
+        data() {
+          return {
+            categories: undefined,
+            page: undefined,
+          };
+        },
+        mounted() {
+          console.log("Mounted");
+        },
+        methods: {
+          doAjax() {
+            fetch("api/categories")
+              .then((response) => response.json())
+              .then((json) => {
+                console.log(json);
+                this.categories = json._embedded.categories;
+                this.page = json.page;
+              })
+              .catch((error) => alert(error));
+          },
+        },
+      };
+      Vue.createApp(HelloVueApp).mount("#app");
+    </script>
+  </body>
 </html>

@@ -1,5 +1,9 @@
 package comptoirs;
 
+
+import javax.persistence.EntityManager;
+import javax.persistence.metamodel.Type;
+
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 // import org.springframework.data.web.config.EnableSpringDataWebSupport;
 // import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -9,6 +13,7 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 
 @SpringBootApplication
 // cf.
@@ -40,7 +45,15 @@ public class App {
 	// Configure le mapper pour qu'il respecte les annotations JAXB, en particulier
 	// XMLTransient
 	public JaxbAnnotationModule JaxbAnnotationModule() {
-		JaxbAnnotationModule module = new JaxbAnnotationModule();
-		return module;
+		return new JaxbAnnotationModule();
 	}
+
+	@Bean
+	// On expose les ID de toutes les entités
+    public RepositoryRestConfigurer repositoryRestConfigurer(EntityManager entityManager) {
+        return RepositoryRestConfigurer.withConfig(config -> {
+            config.exposeIdsFor(entityManager.getMetamodel().getEntities()
+                    .stream().map(Type::getJavaType).toArray(Class[]::new));
+        });
+    }
 }

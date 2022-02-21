@@ -1,7 +1,11 @@
-var app = new Vue({ 
-    el: '#app',
-    data: {
-        json: undefined
+const HelloVueApp = {
+    data() {
+        return {
+                json: undefined
+            }   
+    },
+    mounted() {
+        console.log("Mounted")
     },
     methods: {
         doAjax() {
@@ -11,4 +15,6 @@ var app = new Vue({
                 .catch(error => alert(error));            
         }
     }
-});
+  }
+  
+Vue.createApp(HelloVueApp).mount('#app')
