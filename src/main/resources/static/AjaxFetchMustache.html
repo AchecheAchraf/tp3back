@@ -6,38 +6,28 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
 
-    <!-- On charge la bibliothèque JQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
-    <!-- On charge le moteur de template mustache https://mustache.github.io/ -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
+   <!-- On charge le moteur de template mustache https://mustache.github.io/ -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
 
     <script>
-        $(document).ready(// Exécuté à la fin du chargement de la page
-            function () {
-                // Quand on clique sur le bouton doAjax, on exécute la fonction doRequest
-                $("#doAjax").click(doRequest);
-            }
-        );
-
         // Fonction qui traite les résultats de la requête
         function showResult(resultJson) {
             // Le code source du template est dans la page
-            var template = $('#categoriesTemplate').html();
+            var template = document.getElementById("categoriesTemplate").innerHTML;
             // On combine le template avec le résultat de la requête
-            var processedTemplate = Mustache.to_html(template, resultJson);
+            var generatedHtml = Mustache.render(template, resultJson);
             // On affiche le résultat dans la page
-            $('#tableCategories').html(processedTemplate);
+            document.getElementById("tableCategories").innerHTML = generatedHtml;            
         }
 
         // Fonction qui traite les erreurs de la requête
         function showError(error) {
-            $("#tableCategories").html("Erreur: " + error);
+            document.getElementById.innerHTML = "Erreur: " + error;
         }
 
         // Fonction qui fait l'appel AJAX
         function doRequest() {
-            fetch("api/categories")
+            fetch("http://localhost:8989/api/categories", {mode: 'cors'})
                 .then(response => response.json())
                 .then(json => showResult(json))
                 .catch(error => showError(error));
@@ -46,7 +36,7 @@
 </head>
 
 <body>
-    <button id="doAjax">Exécuter la requête AJAX</button><br>
+    <button onclick="doRequest()">Exécuter la requête AJAX</button><br>
 
     <div id="tableCategories">...Le résultat va apparaître ici...</div>
     <hr>

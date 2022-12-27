@@ -26,7 +26,7 @@
 			// Fonction qui fait l'appel AJAX XML
 			function doXMLRequest() {
 				$.ajax({
-					url: "/api/stats/unitesVenduesPourCategorie?code=1",
+					url: "/rest/stats/unitesVenduesPourCategorie/1",
 					dataType: "xml",
 					success: showXMLResult,
 					error: showError
@@ -43,7 +43,7 @@
 			// Fonction qui fait l'appel AJAX JSON
 			function doJSONRequest() {
 				$.ajax({
-					url: "/api/stats/unitesVenduesPourCategorie?code=1",
+					url: "/rest/stats/unitesVenduesPourCategorie/1",
 					dataType: "json",
 					success: showJSONResult,
 					error: showError

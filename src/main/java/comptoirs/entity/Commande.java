@@ -1,89 +1,64 @@
 package comptoirs.entity;
 
-import java.io.Serializable;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
 @Entity
-@XmlRootElement
-// Lombok
-@Getter @Setter @NoArgsConstructor @ToString
-public class Commande implements Serializable {
-
-	private static final long serialVersionUID = 1L;
-
+@Getter
+@Setter
+@NoArgsConstructor
+@RequiredArgsConstructor
+@ToString
+public class Commande {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
 	@Column(nullable = false)
+	@Setter(AccessLevel.NONE) // la clé est auto-générée par la BD, On ne veut pas de "setter"
 	private Integer numero;
 
 	@Basic(optional = false)
+	@NonNull
 	@Column(nullable = false)
-	private LocalDate saisiele  = LocalDate.now();
+	@ToString.Exclude
+	private LocalDate saisiele;
 
+	@Basic(optional = true)
+	@ToString.Exclude
 	private LocalDate envoyeele;
 
-	// @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+	// @Max(value=?) @Min(value=?)//if you know range of your decimal fields
+	// consider using these annotations to enforce field validation
 	@Column(precision = 18, scale = 2)
-	private BigDecimal port = BigDecimal.ZERO;
+	@ToString.Exclude
+	private BigDecimal port;
 
 	@Size(max = 40)
 	@Column(length = 40)
 	private String destinataire;
 
-	@Embedded AdressePostale adresseLivraison;
+	@Embedded
+	private AdressePostale adresseLivraison;
 
 	@Basic(optional = false)
-	@NotNull
+	@NonNull
 	@Column(nullable = false, precision = 10, scale = 2)
 	private BigDecimal remise = BigDecimal.ZERO;
 
-	@JsonIgnore // Ne pas inclure dans le format JSON
-	@XmlTransient  // Ne pas inclure dans le format XML
-	@ToString.Exclude  // Ne pas inclure dans le toString	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "commande", orphanRemoval = true)
-	private List<Ligne> lignes;
+	private List<Ligne> lignes = new LinkedList<>();
 
 	@ManyToOne(optional = false)
+	@NonNull
 	private Client client;
 
-	@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (numero != null ? numero.hashCode() : 0);
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof Commande)) {
-			return false;
-		}
-		Commande other = (Commande) object;
-		return (this.numero == null && other.numero == null) || (this.numero != null && this.numero.equals(other.numero));
-	}
 }

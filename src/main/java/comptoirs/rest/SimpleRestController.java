@@ -1,48 +1,39 @@
-package comptoirs.controller;
+package comptoirs.rest;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import comptoirs.dao.CategorieRepository;
 import comptoirs.entity.Categorie;
+import comptoirs.entity.Produit;
 import comptoirs.exceptions.DuplicateException;
+import lombok.extern.slf4j.Slf4j;
 
-@Controller // Cette classe est un contrôleur
+@RestController // Cette classe est un contrôleur REST
 @RequestMapping(path = "/comptoirs/simple") // chemin d'accès
-public class SimpleController {
-
-	private final CategorieRepository dao;
-
-	public SimpleController(CategorieRepository dao) {
-		this.dao = dao;
-	}
-
-	/**
-     * Un contrôleur qui génère du HTML "à la main"
-     * @return un fragment de HTML qui montre le nombre de catégories dans la base
-     */
-    @GetMapping(path = "combien", 
-		produces = MediaType.TEXT_HTML_VALUE) // pas de vue , génère directement du HTML
-	public @ResponseBody String combienDeCategories() {
-		return "<h1>Il y a " + dao.count() + " catégories dans la base</h1>";
-	}	
+@Slf4j // Logger
+public class SimpleRestController {
+	@Autowired
+	private CategorieRepository categorieDao;
 	
     /**
      * Un contrôleur qui renvoie une liste d'entités
      * @return la liste des catégories
      */
     @GetMapping(path = "list")
-	public @ResponseBody List<Categorie> getAll() {
+	public List<Categorie> getAll() {
 		// This returns a JSON or XML with the categories
-		return dao.findAll();
+		return categorieDao.findAll();
 	}	
 	
     /**
@@ -53,7 +44,7 @@ public class SimpleController {
      * @throws DuplicateException si le libellé existe déjà
      */
     @RequestMapping(path = "ajouter", method = {RequestMethod.GET, RequestMethod.POST}) 
-	public @ResponseBody Categorie addNew( 
+	public Categorie addNew( 
 			@RequestParam(required = true) final String libelle,
 			@RequestParam(defaultValue = "Description non fournie") final String description
 	) throws DuplicateException {
@@ -61,12 +52,22 @@ public class SimpleController {
 		result.setLibelle(libelle);
 		result.setDescription(description);
 		try {
-			dao.save(result);
+			categorieDao.save(result);
 		} catch (final DataIntegrityViolationException e) {
 			throw new DuplicateException("Le libellé '" + libelle + "' est déjà utilisé");
 		}
 		return result;
 	}
+
+	/**
+     * Un contrôleur qui génère du HTML "à la main"
+     * @return un fragment de HTML qui montre le nombre de catégories dans la base
+     */
+    @GetMapping(path = "combien", 
+		produces = MediaType.TEXT_HTML_VALUE) // pas de vue , génère directement du HTML
+	public String combienDeCategories() {
+		return "<h1>Il y a " + categorieDao.count() + " catégories dans la base</h1>";
+	}	
 
     /**
      *
@@ -74,11 +75,26 @@ public class SimpleController {
      * @return
      */
     @GetMapping(path = "wait", produces = MediaType.TEXT_PLAIN_VALUE) // pas de vue , génère directement du texte)
-	public @ResponseBody String waitFor(@RequestParam(defaultValue = "10") final int timeout) {
+	public String waitFor(@RequestParam(defaultValue = "10") final int timeout) {
 		try {
 			Thread.sleep(1000 * timeout);
 		} catch (final InterruptedException e) {}
 		return "Après un délai de " + timeout + " seconds";
 	}
 
+	@PostMapping(path = "testJson", 
+		consumes = MediaType.APPLICATION_JSON_VALUE, 
+		produces = MediaType.TEXT_PLAIN_VALUE)
+	public String testJSON(@RequestBody Produit p) {
+	  log.info("Produit (JSON): {}", p);
+	  return p.toString();
+	}
+	
+	@PostMapping(path = "testForm", 
+		consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+		produces = MediaType.TEXT_PLAIN_VALUE)
+	public  String testForm(Produit p) {
+		log.info("Produit (FORM): {}", p);
+		return p.toString();
+	}	
 }

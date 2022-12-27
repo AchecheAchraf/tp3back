@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Produits vendus par catégorie</title>
 
+	<!-- On charge la bibliothèque JQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -24,15 +26,13 @@
         google.charts.load('current', {'packages': ['corechart']});
 
         // On fait l'appel AJAX dès le chargement de la page
-        google.charts.setOnLoadCallback(doAjax);
+        google.charts.setOnLoadCallback(()=> doAjax(document.getElementById("code")));
 
         // Fait un appel AJAX pour récupérer les données à afficher
-        function doAjax() {
+        function doAjax(categorieSelectionnee) {
             $.ajax({
                 // On appelle le service qui renvoie le résultat comme un tableau de valeurs
-                url: "/api/stats/unitesVenduesPourCategorieV2",
-                // On passe comme paramètre les données saisies dans le formulaire
-                data: $('#formulaireCategorie').serialize(),
+                url: "/rest/stats/unitesVenduesPourCategorieV2/" + categorieSelectionnee.value,
                 // On demande du JSON comme résultat
                 dataType: "json",
                 success: drawPiechart, // La fonction qui traite les résultats
@@ -97,7 +97,7 @@
             <!--/* On choisit le code de la catégorie sur laquelle doit porter la statistique */-->
             <!--/* Chaque fois qu'on choisit un code, on fait l'appel AJAX */-->
             <label for='code'>Choisissez la catégorie</label><br>
-            <select  class="selectpicker" data-style="btn-primary" id='code' name='code' onchange='doAjax()'>
+            <select  class="selectpicker" data-style="btn-primary" id='code' name='code' onchange='doAjax(this)'>
                 <!--/* Une option pour chaque catégorie c dans la liste 'categories' transmise par le contrôleur */-->
                 <option th:each="c: ${categories}" th:value='${c.code}' value="1" th:text="${c.libelle}">
                     Le libellé de la catégorie
@@ -106,7 +106,7 @@
             <!--/* Pas de 'submit', on fait un appel AJAX */-->
         </form>
         <br/>
-        <a th:href="@{/api/stats/unitesVenduesPourCategorieV2?code=1}" target="_blank" href="#">Résultats fournis
+        <a th:href="@{/api/stats/unitesVenduesPourCategorieV2/1}" target="_blank" href="#">Résultats fournis
             par
             l'appel AJAX</a>
         <!-- Le graphique apparaît ici -->

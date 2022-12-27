@@ -1,4 +1,4 @@
-package comptoirs.controller;
+package comptoirs.mvc;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,11 +9,11 @@ import comptoirs.dao.CategorieRepository;
 
 @Controller
 @RequestMapping(path = "/comptoirs/stats") 
-public class StatsController {
+public class StatsMVCController {
 
 	private final CategorieRepository dao;
 
-	public StatsController(CategorieRepository dao) {
+	public StatsMVCController(CategorieRepository dao) {
 		this.dao = dao;
 	}
 
