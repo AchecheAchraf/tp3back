@@ -1,5 +1,6 @@
 package comptoirs.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -20,16 +21,18 @@ public class Ligne {
 	@JoinColumn(nullable = false)
 	@ManyToOne(optional = false)
 	@NonNull
+	@JsonIgnoreProperties({"lignes", "client"})
 	private Commande commande;
 
 	@JoinColumn(nullable = false)
 	@ManyToOne(optional = false)
 	@NonNull
+	@JsonIgnoreProperties({"lignes", "categorie"})
 	private Produit produit;
 
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@NonNull
-	private Short quantite;
+	private int quantite;
 
 }

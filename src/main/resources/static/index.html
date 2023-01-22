@@ -1,41 +1,21 @@
 <!DOCTYPE HTML>
 <html>
-    <head>
-        <title>Les Comptoirs</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <link rel="stylesheet" type="text/css" href="css/style.css"/>	
-    </head>
-    <body>
-        <h1>Les Comptoirs - Spring Ajax</h1>
-        <ul>
-            <li>Exemples AJAX sans base de données
-                <ul>
-                    <li><a href="AjaxWithXHR.html">Ajax avec l'objet XmlHttpRequest</a></li>
-                    <li><a href="AjaxWithXHRLong.html">Idem, avec une requête longue pour voir l'aspect asynchrone</a></li>
-                    <li><a href="AjaxWithJQuery.html">Idem, avec JQuery</a></li>
-                </ul>
-            <li> Exemples AJAX avec la base de données
-                        <ul>
-                            <li> Les services web utilisés
-                                <ul>
-                                    <li><a href="/swagger-ui/index.html">explorer L'API Rest auto-générée par les Repository</a></li>
-                                    <li><a href="/rest/stats/unitesVenduesPourCategorie/1">Statistique "Unités vendues pour une catégorie"</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="contentNegociation.html">client JQuery avec négociation de contenu</a></li>
-                            <li><a href="AjaxJQueryMustache.html">client JQuery / Moteur de template Mustache</a></li>
-                            <li><a href="AjaxFetchMustache.html">client Fetch / Moteur de template Mustache</a></li>
-                            <li><a href="PostFormFetch.html">client Fetch (Post et Get) / Moteur de template Mustache</a></li>
-                            <li><a href="https://jsfiddle.net/bastide/0pd5r9t7/35/" target="_blank">Exemple avec le moteur de template Mustache</a></li>
-                            <li><a href="AjaxJQueryDataTable.html">client JQuery / Google Table</a></li>
-                            <li><a href="comptoirs/stats/produitsPourCategorie">Unités vendues pour une catégorie (MVC + AJAX + Visualisation Google)</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <ul>   
-                <li><a href="h2-console" target="_blank">Console d'administration de la base de données H2 (URL jdbc:h2:mem:testdb)</a></li>
-            </ul>
-        </ul>
-    </body>
+
+<head>
+    <title>Les Comptoirs</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+</head>
+
+<body>
+    <h1>Les Comptoirs - Backend Spring</h1>
+    <ul>
+        <li><a href="/swagger-ui/index.html">Swagger : explorer L'API Rest auto-générée par les Repository</a></li>
+        <li><a href="/api">Point d'entrée de l'API</a></li>
+        <li><a href="/api/categories">L'API renvoie la liste des catégories</a></li>
+        <li><a href="AjaxFetchCategorie.html">client Fetch pour la liste des catégories</a></li>
+        <li><a href="h2-console" target="_blank">Console d'administration de la base de données H2 (URL jdbc:h2:mem:testdb)</a></li>
+    </ul>
+</body>
+
 </html>

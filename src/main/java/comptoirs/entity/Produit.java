@@ -1,5 +1,6 @@
 package comptoirs.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -28,21 +29,24 @@ public class Produit {
 	private BigDecimal prixUnitaire = BigDecimal.TEN;
 
 	@ToString.Exclude
-	private short unitesEnStock = 0;
+	private int unitesEnStock = 0;
 
 	@ToString.Exclude
-	private short unitesCommandees = 0;
+	private int unitesCommandees = 0;
 
 	@ToString.Exclude
-	private short niveauDeReappro = 0;
+	private int niveauDeReappro = 0;
 
-	private short indisponible = 0;
+	private Boolean indisponible = Boolean.FALSE;
 
 	@ManyToOne(optional = false)
 	@NonNull
+	@ToString.Exclude
+	@JsonIgnoreProperties("produits")
 	private Categorie categorie ;
 
 	@ToString.Exclude
+	@JsonIgnoreProperties({"produit", "commande"})
 	@OneToMany(mappedBy = "produit", cascade = CascadeType.ALL)
 	private List<Ligne> lignes = new LinkedList<>();
 

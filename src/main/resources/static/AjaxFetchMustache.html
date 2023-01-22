@@ -27,7 +27,7 @@
 
         // Fonction qui fait l'appel AJAX
         function doRequest() {
-            fetch("http://localhost:8989/api/categories", {mode: 'cors'})
+            fetch("api/categories", {mode: 'cors'})
                 .then(response => response.json())
                 .then(json => showResult(json))
                 .catch(error => showError(error));

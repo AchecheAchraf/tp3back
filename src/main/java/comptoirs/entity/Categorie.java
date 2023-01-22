@@ -3,6 +3,7 @@ package comptoirs.entity;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
@@ -27,6 +28,7 @@ public class Categorie {
 
 	@ToString.Exclude
 	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "categorie")
+	@JsonIgnoreProperties({"categorie", "lignes"})
 	private List<Produit> produits = new LinkedList<>();
 
 }

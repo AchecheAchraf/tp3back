@@ -1,5 +1,6 @@
 package comptoirs.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
@@ -54,6 +55,7 @@ public class Client {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "client")
     @ToString.Exclude
+    @JsonIgnoreProperties({"client", "lignes"})
     private List<Commande> commandes = new ArrayList<>();
 
 }

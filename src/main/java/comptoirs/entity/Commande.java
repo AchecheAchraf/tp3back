@@ -30,11 +30,11 @@ public class Commande {
 	@NonNull
 	@Column(nullable = false)
 	@ToString.Exclude
-	private LocalDate saisiele;
+	private LocalDate saisiele = LocalDate.now();
 
 	@Basic(optional = true)
 	@ToString.Exclude
-	private LocalDate envoyeele;
+	private LocalDate envoyeele = null;
 
 	// @Max(value=?) @Min(value=?)//if you know range of your decimal fields
 	// consider using these annotations to enforce field validation
@@ -50,15 +50,16 @@ public class Commande {
 	private AdressePostale adresseLivraison;
 
 	@Basic(optional = false)
-	@NonNull
 	@Column(nullable = false, precision = 10, scale = 2)
 	private BigDecimal remise = BigDecimal.ZERO;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "commande", orphanRemoval = true)
+	@JsonIgnoreProperties({"commande"})
 	private List<Ligne> lignes = new LinkedList<>();
 
 	@ManyToOne(optional = false)
 	@NonNull
+	@JsonIgnoreProperties({"commandes"})
 	private Client client;
 
 }
