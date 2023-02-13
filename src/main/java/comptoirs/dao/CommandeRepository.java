@@ -25,5 +25,8 @@ public interface CommandeRepository extends JpaRepository<Commande, Integer> {
     @Query("select c from Commande c where c.numero = :numero")
     CommandeProjection findProjectionByNumero(Integer numero);
 
+    // Renvoie la liste des commandes non evnvoyées
+    List<Commande> findByEnvoyeeleIsNull();
+
 
 }

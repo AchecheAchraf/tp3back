@@ -20,12 +20,12 @@ import comptoirs.exceptions.DuplicateException;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController // Cette classe est un contrôleur REST
-@RequestMapping(path = "/comptoirs/simple") // chemin d'accès
+@RequestMapping(path = "/services/simple") // chemin d'accès
 @Slf4j // Logger
 public class SimpleRestController {
 	@Autowired
 	private CategorieRepository categorieDao;
-	
+
     /**
      * Un contrôleur qui renvoie une liste d'entités
      * @return la liste des catégories
@@ -34,8 +34,8 @@ public class SimpleRestController {
 	public List<Categorie> getAll() {
 		// This returns a JSON or XML with the categories
 		return categorieDao.findAll();
-	}	
-	
+	}
+
     /**
      * Ajoute une nouvelle catégorie par POST ou GET
      * @param libelle le libellé de la nouvelle catégorie
@@ -43,13 +43,12 @@ public class SimpleRestController {
      * @return la catégorie nouvellement créée, avec sa clé auto-générée
      * @throws DuplicateException si le libellé existe déjà
      */
-    @RequestMapping(path = "ajouter", method = {RequestMethod.GET, RequestMethod.POST}) 
-	public Categorie addNew( 
+    @RequestMapping(path = "ajouter", method = {RequestMethod.GET, RequestMethod.POST})
+	public Categorie addNew(
 			@RequestParam(required = true) final String libelle,
 			@RequestParam(defaultValue = "Description non fournie") final String description
 	) throws DuplicateException {
-		final Categorie result = new Categorie();
-		result.setLibelle(libelle);
+		final Categorie result = new Categorie(libelle);
 		result.setDescription(description);
 		try {
 			categorieDao.save(result);
@@ -63,11 +62,11 @@ public class SimpleRestController {
      * Un contrôleur qui génère du HTML "à la main"
      * @return un fragment de HTML qui montre le nombre de catégories dans la base
      */
-    @GetMapping(path = "combien", 
+    @GetMapping(path = "combien",
 		produces = MediaType.TEXT_HTML_VALUE) // pas de vue , génère directement du HTML
 	public String combienDeCategories() {
 		return "<h1>Il y a " + categorieDao.count() + " catégories dans la base</h1>";
-	}	
+	}
 
     /**
      *
@@ -75,26 +74,24 @@ public class SimpleRestController {
      * @return
      */
     @GetMapping(path = "wait", produces = MediaType.TEXT_PLAIN_VALUE) // pas de vue , génère directement du texte)
-	public String waitFor(@RequestParam(defaultValue = "10") final int timeout) {
-		try {
-			Thread.sleep(1000 * timeout);
-		} catch (final InterruptedException e) {}
+	public String waitFor(@RequestParam(defaultValue = "10") final int timeout) throws InterruptedException {
+		Thread.sleep(1000 * timeout);
 		return "Après un délai de " + timeout + " seconds";
 	}
 
-	@PostMapping(path = "testJson", 
-		consumes = MediaType.APPLICATION_JSON_VALUE, 
+	@PostMapping(path = "testJson",
+		consumes = MediaType.APPLICATION_JSON_VALUE,
 		produces = MediaType.TEXT_PLAIN_VALUE)
 	public String testJSON(@RequestBody Produit p) {
 	  log.info("Produit (JSON): {}", p);
 	  return p.toString();
 	}
-	
-	@PostMapping(path = "testForm", 
+
+	@PostMapping(path = "testForm",
 		consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
 		produces = MediaType.TEXT_PLAIN_VALUE)
 	public  String testForm(Produit p) {
 		log.info("Produit (FORM): {}", p);
 		return p.toString();
-	}	
+	}
 }

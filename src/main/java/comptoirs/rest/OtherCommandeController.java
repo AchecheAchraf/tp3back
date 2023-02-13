@@ -12,13 +12,13 @@ import comptoirs.service.CommandeService;
 import org.springframework.web.servlet.view.RedirectView;
 
 @RestController // Cette classe est un contrôleur REST
-@RequestMapping(path = "/comptoirs/commande/other") // chemin d'accès
+@RequestMapping(path = "/services/commande/other") // chemin d'accès
 public class OtherCommandeController {
 
 	private final CommandeService commandeService;
 	private final LigneService ligneService;
 	private final CommandeRepository commandeDao;
-	
+
 	// @Autowired
 	public OtherCommandeController(CommandeService commandeService, LigneService ligneService, CommandeRepository commandeDao) {
 		this.commandeService = commandeService;

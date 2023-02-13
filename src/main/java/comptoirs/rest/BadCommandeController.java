@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import comptoirs.service.CommandeService;
 
 @RestController // Cette classe est un contrôleur REST
-@RequestMapping("/comptoirs/bad") // chemin d'accès
+@RequestMapping("/services/commandes/bad") // chemin d'accès
 public class BadCommandeController {
 	private final CommandeService commandeService;
 	// @Autowired

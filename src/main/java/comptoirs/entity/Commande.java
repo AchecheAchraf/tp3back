@@ -27,7 +27,6 @@ public class Commande {
 	private Integer numero;
 
 	@Basic(optional = false)
-	@NonNull
 	@Column(nullable = false)
 	@ToString.Exclude
 	private LocalDate saisiele = LocalDate.now();
