@@ -33,6 +33,6 @@ public class Ligne {
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@NonNull
-	private int quantite;
+	private Integer quantite;
 
 }

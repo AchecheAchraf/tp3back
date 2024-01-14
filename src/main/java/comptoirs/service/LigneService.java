@@ -27,7 +27,7 @@ public class LigneService {
 
     /**
      * <pre>
-     * Service métier : 
+     * Service métier :
      *     Enregistre une nouvelle ligne de commande pour une commande connue par sa clé,
      *     Incrémente la quantité totale commandée (Produit.unitesCommandees) avec la quantite à commander
      * Règles métier :
@@ -35,9 +35,9 @@ public class LigneService {
      *     - la commande doit exister
      *     - la commande ne doit pas être déjà envoyée (le champ 'envoyeele' doit être null)
      *     - la quantité doit être positive
-     *     - On doit avoir une quantite en stock du produit suffisante
+     *     - On doit avoir une quantité en stock du produit suffisante
      * <pre>
-     * 
+     *
      *  @param commandeNum la clé de la commande
      *  @param produitRef la clé du produit
      *  @param quantite la quantité commandée (positive)
@@ -50,12 +50,25 @@ public class LigneService {
             throw new IllegalStateException("Commande déjà envoyée");
         }
         var produit = produitDao.findById(produitRef).orElseThrow();
-        if (produit.getUnitesEnStock() < quantite) {
-            throw new IllegalArgumentException("Pas assez de stock");
+        if (produit.getUnitesEnStock() < quantite + produit.getUnitesCommandees()) {
+            throw new IllegalArgumentException("Pas assez de stock disponible");
         }
+
         produit.setUnitesCommandees(produit.getUnitesCommandees() + quantite);
-        var ligne = new Ligne(commande, produit, quantite);
-        return ligneDao.save(ligne);
+
+        var oLigne = commande.getLignes().stream()
+                .filter(l -> l.getProduit().getReference().equals(produitRef))
+                .findAny(); // On cherche une ligne pour ce produit
+        if (oLigne.isPresent()) {
+            // Si la ligne existe, on met à jour la quantité
+            var ligne = oLigne.get();
+            ligne.setQuantite(oLigne.get().getQuantite() + quantite);
+            return ligne;
+        } else {
+            // Sinon, on crée une nouvelle ligne
+            var ligne = new Ligne(commande, produit, quantite);
+            return ligneDao.save(ligne);
+        }
     }
-    
+
 }

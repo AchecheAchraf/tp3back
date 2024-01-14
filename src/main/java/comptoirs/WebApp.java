@@ -13,18 +13,20 @@ public class WebApp {
 		SpringApplication.run(WebApp.class, args);
 	}
 
-    @Bean
-    ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
+	@Bean
+	ModelMapper modelMapper() {
+		return new ModelMapper();
+	}
 
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/services/commandes/expedier/*").allowedOrigins("http://localhost:5173");
-				registry.addMapping("/services/commandes/ajouterLigne").allowedOrigins("http://localhost:5173");
+				registry.addMapping("/services/commandes/expedier/*")
+						.allowedOrigins("http://localhost:5173");
+				registry.addMapping("/services/commandes/ajouterLigne")
+						.allowedOrigins("http://localhost:5173");
 			}
 		};
 	}

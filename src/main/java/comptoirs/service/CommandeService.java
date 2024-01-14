@@ -13,23 +13,28 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class CommandeService {
-    // La couche "Service" utilise la couche "Accès aux données" pour effectuer les traitements
+    // La couche "Service" utilise la couche "Accès aux données" pour effectuer les
+    // traitements
     private final CommandeRepository commandeDao;
     private final ClientRepository clientDao;
-    
 
     // @Autowired
-    // La couche "Service" utilise la couche "Accès aux données" pour effectuer les traitements
+    // La couche "Service" utilise la couche "Accès aux données" pour effectuer les
+    // traitements
     public CommandeService(CommandeRepository commandeDao, ClientRepository clientDao) {
         this.commandeDao = commandeDao;
         this.clientDao = clientDao;
     }
+
     /**
-     * Service métier : Enregistre une nouvelle commande pour un client connu par sa clé
+     * Service métier : Enregistre une nouvelle commande pour un client connu par sa
+     * clé
      * Règles métier :
      * - le client doit exister
      * - On initialise l'adresse de livraison avec l'adresse du client
-     * - Si le client a déjà commandé plus de 100 articles, on lui offre une remise de 15%
+     * - Si le client a déjà commandé plus de 100 articles, on lui offre une remise
+     * de 15%
+     * 
      * @param clientCode la clé du client
      * @return la commande créée
      */
@@ -41,7 +46,9 @@ public class CommandeService {
         var nouvelleCommande = new Commande(client);
         // On initialise l'adresse de livraison avec l'adresse du client
         nouvelleCommande.setAdresseLivraison(client.getAdresse());
-        // Si le client a déjà commandé plus de 100 articles, on lui offre une remise de 15%
+        nouvelleCommande.setDestinataire(client.getContact());
+        // Si le client a déjà commandé plus de 100 articles, on lui offre une remise de
+        // 15%
         // La requête SQL nécessaire est définie dans l'interface ClientRepository
         var nbArticles = clientDao.nombreArticlesCommandesPar(clientCode);
         if (nbArticles > 100) {
@@ -56,10 +63,13 @@ public class CommandeService {
      * Service métier : Enregistre l'expédition d'une commande connue par sa clé
      * Règles métier :
      * - la commande doit exister
-     * - la commande ne doit pas être déjà envoyée (le champ 'envoyeele' doit être null)
+     * - la commande ne doit pas être déjà envoyée (le champ 'envoyeele' doit être
+     * null)
      * - On met à jour la date d'expédition (envoyeele) avec la date du jour
-     * - Pour chaque produit commandé, décrémente la quantité en stock (Produit.unitesEnStock)
-     *   de la quantité commandée
+     * - Pour chaque produit commandé, décrémente la quantité en stock
+     * (Produit.unitesEnStock)
+     * de la quantité commandée
+     * 
      * @param commandeNum la clé de la commande
      * @return la commande mise à jour
      */
@@ -74,7 +84,8 @@ public class CommandeService {
         }
         // On met à jour la date d'expédition
         commande.setEnvoyeele(LocalDate.now());
-        // Pour chaque produit commandé, décrémente la quantité en stock (Produit.unitesEnStock)
+        // Pour chaque produit commandé, décrémente la quantité en stock
+        // (Produit.unitesEnStock)
         for (Ligne l : commande.getLignes()) {
             var produit = l.getProduit();
             var stock = produit.getUnitesEnStock();

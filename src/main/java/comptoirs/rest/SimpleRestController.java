@@ -52,7 +52,7 @@ public class SimpleRestController {
 		result.setDescription(description);
 		try {
 			categorieDao.save(result);
-		} catch (final DataIntegrityViolationException e) {
+		} catch (DataIntegrityViolationException e) {
 			throw new DuplicateException("Le libellé '" + libelle + "' est déjà utilisé");
 		}
 		return result;

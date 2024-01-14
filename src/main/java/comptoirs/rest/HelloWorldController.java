@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/services") // chemin d'accès
 
 public class HelloWorldController {
-    // Le chemin d'accès est http://ADRESSE_DU_BACKEND/sayHello
+    // Le chemin d'accès est http://ADRESSE_DU_BACKEND/services/sayHello
     // Le verbe HTTP est GET
     @GetMapping("/sayHello")
     public String helloWorld() {

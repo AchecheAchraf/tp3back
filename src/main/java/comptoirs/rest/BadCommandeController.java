@@ -18,6 +18,6 @@ public class BadCommandeController {
 	@GetMapping("ajouterPour/{clientCode}")
 	// PAS BON ! on renvoie une entité JPA !
 	public Commande ajouter(@PathVariable String clientCode) {
-		return commandeService.creerCommande(clientCode);
+        return commandeService.creerCommande(clientCode);
 	}
 }

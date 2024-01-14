@@ -32,7 +32,7 @@ public class Commande {
 	private LocalDate saisiele = LocalDate.now();
 
 	@Basic(optional = true)
-	@ToString.Exclude
+
 	private LocalDate envoyeele = null;
 
 	// @Max(value=?) @Min(value=?)//if you know range of your decimal fields
