@@ -39,7 +39,7 @@ public class CommandeController {
 	}
 
 	@PostMapping("ajouterLigne")
-	public LigneDTO ajouterLigne(@RequestParam Integer commandeNum, @RequestParam Integer produitRef, @RequestParam Integer quantite) {
+	public LigneDTO ajouterLigne(@RequestParam int commandeNum, @RequestParam int produitRef, @RequestParam int quantite) {
         log.info("ajouterLigne {} {} {}", commandeNum, produitRef, quantite);
 		var ligne = ligneService.ajouterLigne(commandeNum, produitRef, quantite);
 		return mapper.map(ligne, LigneDTO.class);

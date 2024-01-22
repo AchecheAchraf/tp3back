@@ -11,6 +11,7 @@ import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import comptoirs.service.CommandeService;
@@ -54,14 +55,14 @@ public class OtherCommandeController {
     }
 
 	@GetMapping("ajouterPourClient/{clientCode}")
-	public EntityModel<Commande> ajouterEntity(@PathVariable String clientCode) {
+	public EntityModel<Commande> ajouterEntity(@PathVariable @NonNull String clientCode) {
         var commande = commandeService.creerCommande(clientCode);
         Link selfLink = entityLinks.linkToItemResource(Commande.class, commande.getNumero()).withSelfRel();
 		return EntityModel.of(commande, selfLink);
     }
 
 	@GetMapping("ajouterRedirect")
-	public RedirectView ajouterLigneRedirect(@RequestParam Integer commandeNum, @RequestParam Integer produitRef, @RequestParam Integer quantite) {
+	public RedirectView ajouterLigneRedirect(@RequestParam int commandeNum, @RequestParam int produitRef, @RequestParam int quantite) {
 		var ligne = ligneService.ajouterLigne(commandeNum, produitRef, quantite);
         Link selfLink = entityLinks.linkToItemResource(Ligne.class, ligne.getId());
 		return new RedirectView(selfLink.getHref());

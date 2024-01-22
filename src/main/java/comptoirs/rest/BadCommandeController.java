@@ -1,7 +1,8 @@
 package comptoirs.rest;
 
 import comptoirs.entity.Commande;
-import org.springframework.hateoas.EntityModel;
+
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import comptoirs.service.CommandeService;
@@ -17,7 +18,7 @@ public class BadCommandeController {
 	// Le chemin d'accès sera http://.../comptoirs/bad/ajouterPour/CODE_DU_CLIENT
 	@GetMapping("ajouterPour/{clientCode}")
 	// PAS BON ! on renvoie une entité JPA !
-	public Commande ajouter(@PathVariable String clientCode) {
+	public Commande ajouter(@PathVariable @NonNull String clientCode) {
         return commandeService.creerCommande(clientCode);
 	}
 }

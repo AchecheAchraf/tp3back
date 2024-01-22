@@ -6,6 +6,8 @@ import comptoirs.dao.ProduitRepository;
 import comptoirs.entity.Ligne;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Positive;
+
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -44,7 +46,7 @@ public class LigneService {
      *  @return la ligne de commande créée
      */
     @Transactional
-    public Ligne ajouterLigne(Integer commandeNum, Integer produitRef, @Positive int quantite) {
+    public Ligne ajouterLigne(@NonNull Integer commandeNum, @NonNull Integer produitRef, @Positive int quantite) {
         var commande = commandeDao.findById(commandeNum).orElseThrow();
         if (commande.getEnvoyeele() != null) {
             throw new IllegalStateException("Commande déjà envoyée");

@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import comptoirs.entity.Ligne;
+
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import comptoirs.dao.ClientRepository;
@@ -34,12 +36,12 @@ public class CommandeService {
      * - On initialise l'adresse de livraison avec l'adresse du client
      * - Si le client a déjà commandé plus de 100 articles, on lui offre une remise
      * de 15%
-     * 
+     *
      * @param clientCode la clé du client
      * @return la commande créée
      */
     @Transactional
-    public Commande creerCommande(String clientCode) {
+    public Commande creerCommande(@NonNull String clientCode) {
         // On vérifie que le client existe
         var client = clientDao.findById(clientCode).orElseThrow();
         // On crée une commande pour ce client
@@ -69,12 +71,12 @@ public class CommandeService {
      * - Pour chaque produit commandé, décrémente la quantité en stock
      * (Produit.unitesEnStock)
      * de la quantité commandée
-     * 
+     *
      * @param commandeNum la clé de la commande
      * @return la commande mise à jour
      */
     @Transactional
-    public Commande enregistreExpedition(Integer commandeNum) {
+    public Commande enregistreExpedition(@NonNull Integer commandeNum) {
         // On vérifie que la commande existe
         var commande = commandeDao.findById(commandeNum).orElseThrow();
         // On vérifie que la commande n'a pas déjà été expédiée
