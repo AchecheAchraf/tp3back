@@ -10,7 +10,8 @@
     <script>
         // Fonction qui traite les résultats de la requête
         function showResult(resultJson) {
-            console.log(resultJson);            
+            alert("Il y a " + resultJson.page.totalElements + " catégories");
+            console.log(resultJson);
         }
 
         // Fonction qui traite les erreurs de la requête

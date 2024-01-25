@@ -6,45 +6,61 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
 
-    <!-- On charge la bibliothèque JQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
     <!-- On charge le moteur de template mustache https://mustache.github.io/ -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
 
-    <!-- Un petit script pour sérialiser un formulaire en JSON -->
-    <!-- cf. https://github.com/macek/jquery-serialize-object -->
-    <script src="./js/jquery.serialize-object.js"></script>
 
     <script>
-        $(document).ready(// Exécuté à la fin du chargement de la page
-            function () {
-                chargeCategories();
+        var formulaire, boutonAjouter, tableCategories, message, template;
+        // Exécuté à la fin du chargement de la page
+        window.onload = function () {
+            formulaire = document.getElementById("formulaire");
+            boutonAjouter = document.getElementById("boutonAjouter");
+            tableCategories = document.getElementById("tableCategories");
+            message = document.getElementById("message");
+            template = document.getElementById("categoriesTemplate").innerHTML;
+            boutonAjouter.addEventListener("click", ajouteCategorie);
+            chargeCategories();
+        };
+
+        // Transforme les données saisies dans le formulaire en format JSON
+        function serializeFormToJSON(form) {
+            let formData = new FormData(form);
+            let obj = {};
+            for (let key of formData.keys()) {
+                obj[key] = formData.get(key);
             }
-        );
+            return JSON.stringify(obj);
+        }
 
         // Afficher la liste des catégories avec un template
         function afficheTableCategories(resultJson) {
             afficheMessage("");
-            // Le code source du template est dans la page
-            var template = $('#categoriesTemplate').html();
             // On combine le template avec le résultat de la requête
             var processedTemplate = Mustache.to_html(template, resultJson);
             // On affiche le résultat dans la page
-            $('#tableCategories').html(processedTemplate);
+            tableCategories.innerHTML = processedTemplate;
+        }
+        // fonction qui détecte les erreurs dans la réponse reçue
+        function handleErrors(response) {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response;
         }
 
         // Un appel AJAX GET pour chercher la liste des catégories
         function chargeCategories() {
             fetch("api/categories")
+                .then(handleErrors)
                 .then(response => response.json())
-                .then(json => afficheTableCategories(json))
-                .catch(error => afficheMessage(error));
+                .then(afficheTableCategories)
+                .catch(error => afficheMessage(error.message));
         }
 
         // Afficher un message d'erreur
-        function afficheMessage(error) {
-            $("#message").html(error);
+        function afficheMessage(texte) {
+            message.innerHTML = texte;
         }
 
         // Enregistrer une nouvelle catégorie
@@ -58,8 +74,8 @@
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    // Transforme les données saisies dans le formulaire en format JSON
-                    body: $('#formulaire').serializeJSON()
+
+                    body: serializeFormToJSON(formulaire)
                 })
                 .then(response => {
                     // On vérifie le code de retour de la requête
@@ -73,7 +89,7 @@
                             break;
                     }
                 })
-                .catch(error => afficheMessage(error));
+                .catch(afficheMessage);
         }
     </script>
 </head>
@@ -85,7 +101,7 @@
         <input name="libelle" placeholder="Libellé de la catégorie"><br>
         <label for="description">Description</label>
         <textarea name="description" placeholder="Description de la catégorie"></textarea><br>
-        <button type="button" onclick="ajouteCategorie()">Ajouter</button>
+        <button type="button" id="boutonAjouter">Ajouter</button>
     </form>
     <!-- Les messages d'erreur s'affichent ici -->
     <div id="message"></div>
@@ -101,13 +117,13 @@
         <TABLE>
         {{! Un commentaire Mustache }}
         <TR><TH>Code</TH><TH>Libelle</TH><TH>Description</TH></TR>
-        {{! Pour chaque categorie dans le tableau 'content' }}
+        {{! Pour chaque categorie dans le tableau 'categories' }}
         {{#_embedded.categories}}
         {{! Une ligne dans la table }}
         <TR><TD>{{code}}</TD><TD>{{libelle}}</TD><TD>{{description}}</TD></TR>
         {{/_embedded.categories}}
         </TABLE>
-        </script>
+    </script>
 </body>
 
 </html>

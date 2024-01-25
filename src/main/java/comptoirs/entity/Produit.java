@@ -18,7 +18,7 @@ public class Produit {
 	private Integer reference = null;
 
 	@NonNull
-	@Column(unique=true, length = 255)	
+	@Column(unique=true, length = 255)
 	private String nom;
 
 	@ToString.Exclude
@@ -37,7 +37,7 @@ public class Produit {
 	@ToString.Exclude
 	private int niveauDeReappro = 0;
 
-	private Boolean indisponible = Boolean.FALSE;
+	private boolean indisponible = false;
 
 	@ManyToOne(optional = false)
 	@NonNull

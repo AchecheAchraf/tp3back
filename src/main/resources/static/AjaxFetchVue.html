@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="css/style.css" />
 
     <!-- On charge la bibliothèque Vue.js -->
-    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   </head>
 
   <body>
@@ -14,10 +14,8 @@
       <button v-on:click="doAjax">Exécuter la requête AJAX</button><br />
       <div v-if="! categories">...Le résultat va apparaître ici...</div>
       <div v-if="categories">
-        <h2>
-          Liste des catégories ({{categories.length}} / {{page.totalElements}})
-        </h2>
         <table>
+        <caption>Liste des catégories ({{categories.length}} / {{page.totalElements}})</caption>
           <tr>
             <th>Code</th>
             <th>Libelle</th>

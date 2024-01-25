@@ -4,7 +4,6 @@ import comptoirs.dao.CommandeRepository;
 import comptoirs.dto.CommandeProjection;
 import comptoirs.entity.Commande;
 import comptoirs.entity.Ligne;
-import comptoirs.service.LigneService;
 
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
 import org.springframework.format.support.DefaultFormattingConversionService;
@@ -26,7 +25,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class OtherCommandeController {
 
 	private final CommandeService commandeService;
-	private final LigneService ligneService;
+
 	private final CommandeRepository commandeDao;
 
     private final RepositoryEntityLinks entityLinks;
@@ -34,9 +33,8 @@ public class OtherCommandeController {
     private final DefaultFormattingConversionService conversionService;
 
 	// @Autowired
-	public OtherCommandeController(CommandeService commandeService, LigneService ligneService, CommandeRepository commandeDao, RepositoryEntityLinks entityLinks, DefaultFormattingConversionService conversionService) {
+	public OtherCommandeController(CommandeService commandeService, CommandeRepository commandeDao, RepositoryEntityLinks entityLinks, DefaultFormattingConversionService conversionService) {
 		this.commandeService = commandeService;
-		this.ligneService = ligneService;
 		this.commandeDao = commandeDao;
         this.entityLinks = entityLinks;
         this.conversionService = conversionService;
@@ -63,7 +61,7 @@ public class OtherCommandeController {
 
 	@GetMapping("ajouterRedirect")
 	public RedirectView ajouterLigneRedirect(@RequestParam int commandeNum, @RequestParam int produitRef, @RequestParam int quantite) {
-		var ligne = ligneService.ajouterLigne(commandeNum, produitRef, quantite);
+		var ligne = commandeService.ajouterLigne(commandeNum, produitRef, quantite);
         Link selfLink = entityLinks.linkToItemResource(Ligne.class, ligne.getId());
 		return new RedirectView(selfLink.getHref());
 	}

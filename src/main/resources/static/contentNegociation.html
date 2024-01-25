@@ -1,74 +1,83 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Négociation de contenu</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<link rel="stylesheet" type="text/css" href="css/style.css"/>	
 
-		<!-- On charge la bibliothèque JQuery -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<head>
+    <title>Négociation de contenu</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
 
 
-		<script>
-			$(document).ready(// Exécuté à la fin du chargement de la page
-				function () {
-					// Fonctions à exécuter quand on clique sur les boutons
-					$("#doAjaxXML").click(  doXMLRequest  );
-					$("#doAjaxJSON").click( doJSONRequest );
-				}
-			);
+    <script>
+        var xmlButton, jsonButton, resultat;
+        window.onload = function () {
+            xmlButton = document.getElementById("doAjaxXML");
+            jsonButton = document.getElementById("doAjaxJSON");
+            resultat = document.getElementById("resultat");
+            xmlButton.addEventListener("click", doXMLRequest);
+            jsonButton.addEventListener("click", doJSONRequest);
+        };
 
-			// Fonction qui traite les erreurs de la requête
-			function showError(xhr, status, message) {
-				$("#resultat").html("Erreur: " + status + " : " + message);
-			}
+        // Fonction qui affiche les erreurs de la requête
+        function showError(error) {
+            resultat.innerHTML = "Erreur: " + error.message;
+        }
 
-			// Fonction qui fait l'appel AJAX XML
-			function doXMLRequest() {
-				$.ajax({
-					url: "/rest/stats/unitesVenduesPourCategorie/1",
-					dataType: "xml",
-					success: showXMLResult,
-					error: showError
-				});
-			}
+        // fonction qui détecte les erreurs dans la réponse reçue
+        function handleErrors(response) {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response;
+        }
 
-			// Fonction qui affiche les résultats de la requête XML
-			function showXMLResult(resultXML) {
-				// On reçoit un objet 'XMLDocument', on le transforme en String
-				var text = new XMLSerializer().serializeToString(resultXML.documentElement);
-				$('#resultat').html(text);	
-			}
+        // Faire une requête en demandant du XML
+        function doXMLRequest() {
+            let options = {
+                headers: {
+                    'Accept': 'application/xml'
+                }
+            };
+            fetch("/services/stats/unitesVenduesPourCategorie/1", options)
+                .then(handleErrors)
+                .then(response => response.text())
+                .then(showXMLResult)
+                .catch(showError);
+        }
 
-			// Fonction qui fait l'appel AJAX JSON
-			function doJSONRequest() {
-				$.ajax({
-					url: "/rest/stats/unitesVenduesPourCategorie/1",
-					dataType: "json",
-					success: showJSONResult,
-					error: showError
-				});
-			}
+        // Faire une requête en demandant du JSON (par défaut)
+        function doJSONRequest() {
+            fetch("/services/stats/unitesVenduesPourCategorie/1")
+                .then(handleErrors)
+                .then(response => response.json())
+                .then(showJSONResult)
+                .catch(error => showError("Error", error));
+        }
 
-			// Fonction qui affiche les résultats de la requête JSON
-			function showJSONResult(resultJSON) {
-				// On reçoit un objet javascript, on le transforme en String
-				var text = JSON.stringify(resultJSON);
-				$('#resultat').html(text);	
-			}
+        // Fonction qui affiche les résultats de la requête XML
+        function showXMLResult(resultXML) {
+            resultat.innerHTML = resultXML;
+        }
 
-			
-		</script>        
-	</head>
-	<body>
-		<h1>Exemple de négociation de contenu</h1>
-		<button id="doAjaxXML">Exécuter la requête AJAX (XML)</button><br> 
-		<button id="doAjaxJSON">Exécuter la requête AJAX (JSON)</button><br>
-		<textarea id="resultat" rows="15" cols="120">
+        // Fonction qui affiche les résultats de la requête JSON
+        function showJSONResult(resultJSON) {
+            // On reçoit un objet javascript, on le transforme en String
+            var text = JSON.stringify(resultJSON);
+            resultat.innerHTML = text;
+        }
+
+    </script>
+</head>
+
+<body>
+    <h1>Exemple de négociation de contenu</h1>
+    <button id="doAjaxXML">Exécuter la requête AJAX (XML)</button><br>
+    <button id="doAjaxJSON">Exécuter la requête AJAX (JSON)</button><br>
+    <textarea id="resultat" rows="15" cols="120">
 			...Le résultat va apparaître ici...
-		</textarea>
-		
-		<hr>
-		<a href="/">Retour au menu</a>		
-	</body>
+	</textarea>
+
+    <hr>
+    <a href="/">Retour au menu</a>
+</body>
+
 </html>
